@@ -1,0 +1,28 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Kematjaya\BackupBundle\Builder\FactoryBuilderInterface:
+        class: Kematjaya\BackupBundle\Builder\FactoryBuilder
+        
+    Kematjaya\BackupBundle\Manager\BackupManagerInterface:
+        class: Kematjaya\BackupBundle\Manager\BackupManager
+        
+    Kematjaya\BackupBundle\Connection\ConnectionInterface:
+        class: Kematjaya\BackupBundle\Connection\DoctrineConnection
+        
+    Kematjaya\BackupBundle\Factory\FactoryBuilderInterface:
+        class: Kematjaya\BackupBundle\Factory\FactoryBuilder
+       
+    Kematjaya\BackupBundle\Factory\PostgresSQL:
+        class: Kematjaya\BackupBundle\Factory\PostgresSQL
+        
+    Kematjaya\BackupBundle\Factory\MySQL:
+        class: Kematjaya\BackupBundle\Factory\MySQL
+        
+    Kematjaya\BackupBundle\Command\DumpCommand:
+        class: Kematjaya\BackupBundle\Command\DumpCommand
+        tags:
+            -  { name: console.command }
