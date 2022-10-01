@@ -7,6 +7,10 @@
 
 namespace Kematjaya\BackupBundle\Manager;
 
+use Kematjaya\BackupBundle\Event\BackupEvents;
+use Kematjaya\BackupBundle\Event\BeforeDumpEvent;
+use Kematjaya\BackupBundle\Event\AfterDumpEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Kematjaya\BackupBundle\Connection\ConnectionInterface;
 use Kematjaya\BackupBundle\Builder\FactoryBuilderInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -37,9 +41,16 @@ class BackupManager implements BackupManagerInterface
      */
     private $connection;
     
-    public function __construct(ConnectionInterface $connection, FactoryBuilderInterface $factoryBuilder, ParameterBagInterface $bag) 
+    /**
+     * 
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+    
+    public function __construct(ConnectionInterface $connection, EventDispatcherInterface $eventDispatcher, FactoryBuilderInterface $factoryBuilder, ParameterBagInterface $bag) 
     {
         $this->configs = $bag->get("backup");
+        $this->eventDispatcher = $eventDispatcher;
         $this->factoryBuilder = $factoryBuilder;
         $this->connection = $connection;
     }
@@ -56,8 +67,18 @@ class BackupManager implements BackupManagerInterface
                 ->setPort($this->connection->getPort())
                 ->setUserName($this->connection->getUsername())
                 ->setPassword($this->connection->getPassword());
+        
+        $this->eventDispatcher->dispatch(
+            new BeforeDumpEvent($dumper, $fileName), 
+            BackupEvents::BEFORE_DUMP
+        );
             
         $dumper->dumpToFile($fileName);
+        
+        $this->eventDispatcher->dispatch(
+            new AfterDumpEvent($dumper, $fileName), 
+            BackupEvents::AFTER_DUMP
+        );
         
         return $fileName;
     }

@@ -9,11 +9,12 @@
         }
     ],
     "require": {
-        "symfony/yaml": "^5.3",
-        "symfony/framework-bundle": "^5.3",
+        "symfony/yaml": "^5.3|^6.0",
+        "symfony/framework-bundle": "^5.3|^6.0",
         "doctrine/collections": "^1.6",
         "spatie/db-dumper": "^2.21",
-        "doctrine/persistence": "~2.0|^3.0"
+        "doctrine/persistence": "~2.0|^3.0",
+        "symfony/event-dispatcher": "^5.4|^6.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^5.3",
