@@ -5,11 +5,6 @@ namespace Kematjaya\BackupBundle\Event;
 use Spatie\DbDumper\DbDumper;
 use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * Description of newPHPClass
- *
- * @author apple
- */
 abstract class BackupEvent extends Event
 {
     /**

@@ -1,10 +1,5 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace Kematjaya\BackupBundle\Manager;
 
 use Kematjaya\BackupBundle\Event\BackupEvents;
@@ -16,36 +11,14 @@ use Kematjaya\BackupBundle\Builder\FactoryBuilderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-/**
- * Description of BackupManager
- *
- * @author apple
- */
 class BackupManager implements BackupManagerInterface 
 {
-    /**
-     * 
-     * @var FactoryBuilderInterface
-     */
-    private $factoryBuilder;
+    private FactoryBuilderInterface $factoryBuilder;
     
-    /**
-     * 
-     * @var array
-     */
-    private $configs;
+    private array $configs;
+    private ConnectionInterface $connection;
     
-    /**
-     * 
-     * @var ConnectionInterface
-     */
-    private $connection;
-    
-    /**
-     * 
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
     
     public function __construct(ConnectionInterface $connection, EventDispatcherInterface $eventDispatcher, FactoryBuilderInterface $factoryBuilder, ParameterBagInterface $bag) 
     {

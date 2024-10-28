@@ -1,21 +1,11 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPInterface.php to edit this template
- */
-
 namespace Kematjaya\BackupBundle\Factory;
 
 use Spatie\DbDumper\DbDumper;
 
-/**
- *
- * @author apple
- */
-interface FactoryInterface 
+interface FactoryInterface
 {
-    
     const TAG_NAME = "db_dumper.factory";
     
     /**

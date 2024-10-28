@@ -1,28 +1,14 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace Kematjaya\BackupBundle\Builder;
 
 use Kematjaya\BackupBundle\Exception\FactoryNotFoundException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Kematjaya\BackupBundle\Factory\FactoryInterface;
 
-/**
- * Description of FactoryBuilder
- *
- * @author apple
- */
-class FactoryBuilder implements FactoryBuilderInterface 
+class FactoryBuilder implements FactoryBuilderInterface
 {
-    /**
-     * 
-     * @var ArrayCollection
-     */
-    private $factories;
+    private ArrayCollection $factories;
     
     public function __construct() 
     {

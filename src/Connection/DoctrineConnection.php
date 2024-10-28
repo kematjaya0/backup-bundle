@@ -1,20 +1,10 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace Kematjaya\BackupBundle\Connection;
 
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * Description of DoctrineConnection
- *
- * @author apple
- */
-class DoctrineConnection implements ConnectionInterface 
+class DoctrineConnection implements ConnectionInterface
 {
     /**
      * 

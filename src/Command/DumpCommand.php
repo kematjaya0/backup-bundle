@@ -1,10 +1,5 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace Kematjaya\BackupBundle\Command;
 
 use Kematjaya\BackupBundle\Manager\BackupManagerInterface;
@@ -13,20 +8,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Description of DumpCommand
- *
- * @author apple
- */
-class DumpCommand extends Command 
+class DumpCommand extends Command
 {
     protected static $defaultName = 'database:dump';
     
-    /**
-     * 
-     * @var BackupManagerInterface
-     */
-    private $backupManager;
+    private BackupManagerInterface $backupManager;
     
     public function __construct(mixed $name = null, BackupManagerInterface $backupManager) 
     {
