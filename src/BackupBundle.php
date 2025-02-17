@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class BackupBundle extends Bundle
 {
-    public function build(ContainerBuilder $container) 
+    public function build(ContainerBuilder $container) :void
     {
         $container->registerForAutoconfiguration(FactoryInterface::class)
                 ->addTag(FactoryInterface::TAG_NAME);

@@ -13,19 +13,12 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BackupManager implements BackupManagerInterface 
 {
-    private FactoryBuilderInterface $factoryBuilder;
     
     private array $configs;
-    private ConnectionInterface $connection;
     
-    private EventDispatcherInterface $eventDispatcher;
-    
-    public function __construct(ConnectionInterface $connection, EventDispatcherInterface $eventDispatcher, FactoryBuilderInterface $factoryBuilder, ParameterBagInterface $bag) 
+    public function __construct(private ConnectionInterface $connection, private EventDispatcherInterface $eventDispatcher, private FactoryBuilderInterface $factoryBuilder, ParameterBagInterface $bag)
     {
         $this->configs = $bag->get("backup");
-        $this->eventDispatcher = $eventDispatcher;
-        $this->factoryBuilder = $factoryBuilder;
-        $this->connection = $connection;
     }
     
     public function run(): string 
