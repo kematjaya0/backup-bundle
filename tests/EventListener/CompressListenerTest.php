@@ -17,7 +17,7 @@ class CompressListenerTest extends TestCase
 
         $event = new AfterDumpEvent($dumper, $tempFile);
         
-        $listener = new CompressListener\();
+        $listener = new CompressListener();
         $listener->compress($event);
 
         $expectedGzFile = $tempFile . '.gz';
