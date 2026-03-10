@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class BackupBundleTest extends Kernel
 {
     
-    public function registerBundles() 
+    public function registerBundles(): iterable
     {
         return [
             new \Kematjaya\BackupBundle\BackupBundle(),
@@ -21,7 +21,7 @@ class BackupBundleTest extends Kernel
         ];
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader) 
+    public function registerContainerConfiguration(LoaderInterface $loader): void 
     {
         $loader->load(function (ContainerBuilder $container) use ($loader) 
         {

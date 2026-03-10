@@ -47,9 +47,9 @@ class BackupManager implements BackupManagerInterface
         );
             
         $dumper->dumpToFile($fileName);
-        
+        $evt = new AfterDumpEvent($dumper, $fileName);
         $this->eventDispatcher->dispatch(
-            new AfterDumpEvent($dumper, $fileName), 
+            $evt,
             BackupEvents::AFTER_DUMP
         );
         

@@ -14,13 +14,13 @@ class DumpCommand extends Command
     
     private BackupManagerInterface $backupManager;
     
-    public function __construct(mixed $name = null, BackupManagerInterface $backupManager) 
+    public function __construct(BackupManagerInterface $backupManager, mixed $name = null) 
     {
         $this->backupManager = $backupManager;
         parent::__construct($name);
     }
     
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output):int
     {
         $io = new SymfonyStyle($input, $output);
         $io->title("backup database");

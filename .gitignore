@@ -53,3 +53,5 @@ composer.lock
 /.web-server-pid
 nbproject
 tests/uploads
+var
+.idea
