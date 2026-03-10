@@ -23,6 +23,7 @@ services:
         class: Kematjaya\BackupBundle\Factory\MySQL
 
     Kematjaya\BackupBundle\EventListener\CompressListener: ~
+    Kematjaya\BackupBundle\Controller\BackupController: ~
         
     Kematjaya\BackupBundle\Command\DumpCommand:
         class: Kematjaya\BackupBundle\Command\DumpCommand
