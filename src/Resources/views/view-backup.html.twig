@@ -1,0 +1,22 @@
+{% extends "@Backup/layout.html.twig" %}
+
+{% block title %}
+    {{ 'backup_content'|trans }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover">
+                <tbody>
+                {% for directory in directories %}
+                    <tr>
+                        <td>
+                            <span class="fa fa-folder"></span> {{ link_to("backup_view", {q: directory.path}, {label: directory.name}) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
