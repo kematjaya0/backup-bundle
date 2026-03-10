@@ -35,4 +35,10 @@ abstract class BackupEvent extends Event
         return $this->fileName;
     }
 
+    public function setFileName(string $fileName):self
+    {
+        $this->fileName = $fileName;
+        return $this;
+    }
+
 }

@@ -40,53 +40,21 @@ class BackupManager implements BackupManagerInterface
         );
 
         $dumper->dumpToFile($fileName);
-        $compressed = $this->compressGzip($fileName);
-        if ($compressed) {
-            unlink($fileName);
-        }
 
+        $evt = new AfterDumpEvent($dumper, $fileName);
         $this->eventDispatcher->dispatch(
-            new AfterDumpEvent($dumper, $compressed),
+            $evt,
             BackupEvents::AFTER_DUMP
         );
 
-        return $compressed;
+        return $evt->getFileName();
     }
 
     public function getBackupPath():string
     {
         return $this->configs["location"];
     }
-    protected function compressGzip(string $sourcePath, ?string $destinationPath = null, int $level = 9): string
-    {
-        if (!file_exists($sourcePath)) {
-            throw new InvalidArgumentException("File not found: $sourcePath");
-        }
 
-        if ($destinationPath === null) {
-            $destinationPath = $sourcePath . '.gz';
-        }
-
-        $inFile  = fopen($sourcePath, 'rb');
-        if (!$inFile) {
-            throw new RuntimeException("failed open source file.");
-        }
-
-        $outFile = gzopen($destinationPath, 'wb' . $level);
-        if (!$outFile) {
-            fclose($inFile);
-            throw new RuntimeException("create gzip failed.");
-        }
-
-        while (!feof($inFile)) {
-            gzwrite($outFile, fread($inFile, 1024 * 512)); // 512KB chunk
-        }
-
-        fclose($inFile);
-        gzclose($outFile);
-
-        return $destinationPath;
-    }
 
     protected function prepareDir(): string
     {
