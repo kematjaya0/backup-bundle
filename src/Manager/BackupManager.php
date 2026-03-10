@@ -52,8 +52,8 @@ class BackupManager implements BackupManagerInterface
             $evt,
             BackupEvents::AFTER_DUMP
         );
-        
-        return $fileName;
+
+        return $evt->getFileName();
     }
     
     public function getBackupPath():string

@@ -1,0 +1,4 @@
+backup_view:
+  path: /view-backup-file.html
+  methods: ['GET']
+  controller: Kematjaya\BackupBundle\Controller\BackupController::viewBackup

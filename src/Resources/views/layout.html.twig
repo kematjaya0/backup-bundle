@@ -1,0 +1,21 @@
+{% block stylesheets %}{% endblock %}
+
+{% block form_start %}{% endblock %}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title" id="myModalLabel">{% block title %}Modal Layout{% endblock %}</h4>
+</div>
+<div class="modal-body">
+
+    <div id="message" class="hidden alert alert-danger"></div>
+
+    <div class="table-responsive" style="max-height: 40em; overflow-y: auto">
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+</div>
+{% block form_end %}{% endblock %}
