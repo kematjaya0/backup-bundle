@@ -5,6 +5,8 @@ namespace Kematjaya\BackupBundle\EventListener;
 use Kematjaya\BackupBundle\Event\AfterDumpEvent;
 use Kematjaya\BackupBundle\Event\BackupEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class CompressListener implements EventSubscriberInterface
 {
@@ -13,6 +15,13 @@ class CompressListener implements EventSubscriberInterface
         return [
             BackupEvents::AFTER_DUMP => "compress"
         ];
+    }
+
+    private LoggerInterface $logger;
+
+    public function __construct(?LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function compress(AfterDumpEvent $evt):void
@@ -31,7 +40,10 @@ class CompressListener implements EventSubscriberInterface
         $evt->setFileName($destinationPath);
 
         if (file_exists($sourcePath)) {
-            @unlink($sourcePath);
+            $this->logger->info('Compressed dump to {file}', ['file' => $destinationPath]);
+            if (!@unlink($sourcePath)) {
+                $this->logger->warning('Failed to remove source dump file: {file}', ['file' => $sourcePath]);
+            }
         }
     }
 
@@ -71,7 +83,7 @@ class CompressListener implements EventSubscriberInterface
             throw new \RuntimeException("failed open source file.");
         }
 
-        $outFile = gzopen($destinationPath, 'wb' . $level);
+        $outFile = gzopen($destinationPath, sprintf('wb%d', max(0, min(9, $level))));
         if (!$outFile) {
             fclose($inFile);
             throw new \RuntimeException("create gzip failed.");

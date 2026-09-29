@@ -1,6 +1,6 @@
 <?php
 
-namespace Kematjaya\UploadBundle\Tests;
+namespace Kematjaya\BackupBundle\Tests;
 
 use Kematjaya\BackupBundle\Exception\FactoryNotFoundException;
 use Kematjaya\BackupBundle\Manager\BackupManager;
@@ -18,13 +18,23 @@ class BundleTest extends WebTestCase
         return BackupBundleTest::class;
     }
     
+    public function testDiCommandRegistered(): void
+    {
+        $client = parent::createClient();
+        $container = $client->getContainer();
+        $application = new \Symfony\Bundle\FrameworkBundle\Console\Application($client->getKernel());
+        $command = $application->find('database:dump');
+        $this->assertInstanceOf(\Symfony\Component\Console\Command\Command::class, $command);
+        $this->assertSame('database:dump', $command->getName());
+    }
+
     public function testLoadBundle(): BackupManagerInterface
     {
         $client = parent::createClient();
         $container = $client->getContainer();
-        
+
         $this->assertInstanceOf(BackupManager::class, $container->get(BackupManagerInterface::class));
-        
+
         return $container->get(BackupManagerInterface::class);
     }
 }

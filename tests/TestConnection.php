@@ -18,23 +18,23 @@ class TestConnection implements ConnectionInterface
 {
     //put your code here
     public function getDbName(): string {
-        
+        return 'test_db';
     }
 
     public function getHost(): string {
-        
+        return 'localhost';
     }
 
     public function getPassword(): ?string {
-        
+        return null;
     }
 
     public function getPort(): int {
-        
+        return 3306;
     }
 
     public function getUsername(): string {
-        
+        return 'root';
     }
 
 }

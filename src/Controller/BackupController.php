@@ -14,26 +14,38 @@ class BackupController extends AbstractController
     public function viewBackup(Request $request, BackupManagerInterface $backupManager):Response
     {
         $directories = [];
-        $path = $request->query->get("q", current($request->request->all())['q'] ?? null);
+        $path = $request->query->get('q');
         $basePath = $backupManager->getBackupPath();
         $skipped = [".", ".."];
-        if (null != $path) {
+        if (null !== $path && '' !== $path) {
+            if (!preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]*$/', $path)) {
+                throw $this->createNotFoundException(sprintf('Invalid backup path "%s"', $path));
+            }
+
+            $realBase = realpath($backupManager->getBackupPath());
+            $realTarget = $realBase === false ? false : realpath($realBase . DIRECTORY_SEPARATOR . $path);
+            if ($realTarget === false || !is_dir($realTarget) || !str_starts_with($realTarget, $realBase . DIRECTORY_SEPARATOR)) {
+                throw $this->createNotFoundException(sprintf('Invalid backup path "%s"', $path));
+            }
+
+            $zipFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'backup-' . bin2hex(random_bytes(8)) . '.zip';
             $zip = new \ZipArchive();
-            $zipFile = $this->getParameter("kernel.project_dir") . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . $path.'.zip';
-            $zip->open($zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
-            $realPath = $backupManager->getBackupPath() . DIRECTORY_SEPARATOR . $path;
+            if ($zip->open($zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+                throw new \RuntimeException('Failed to create zip archive.');
+            }
+
             $files = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($realPath),
+                new \RecursiveDirectoryIterator($realTarget, \FilesystemIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::LEAVES_ONLY
             );
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 if ($file->isDir()) {
                     continue;
                 }
 
                 $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($realPath) + 1);
+                $relativePath = substr($filePath, strlen($realTarget) + 1);
                 $zip->addFile($filePath, $relativePath);
             }
 

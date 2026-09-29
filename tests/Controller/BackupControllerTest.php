@@ -82,6 +82,42 @@ class BackupControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    public function testViewBackupInvalidPaths(): void
+    {
+        $backupManager = $this->createMock(BackupManagerInterface::class);
+        $backupManager->method('getBackupPath')->willReturn($this->backupBaseDir);
+        $controller = new BackupController();
+
+        $invalidQueries = [
+            '../etc',
+            '..',
+            'foo/bar',
+            'no-such-dir-123',
+        ];
+
+        foreach ($invalidQueries as $q) {
+            $request = new Request(['q' => $q]);
+            try {
+                $controller->viewBackup($request, $backupManager);
+                $this->fail(sprintf('Expected NotFoundHttpException for q="%s"', $q));
+            } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+                $this->assertNotEmpty($e->getMessage());
+            }
+        }
+
+        // empty string leads to list view
+        $request = new Request(['q' => '']);
+        $controller = $this->getMockBuilder(BackupController::class)
+            ->onlyMethods(['render'])
+            ->getMock();
+        $controller->expects($this->once())
+            ->method('render')
+            ->with('@Backup/view-backup.html.twig', $this->anything())
+            ->willReturn(new Response());
+        $response = $controller->viewBackup($request, $backupManager);
+        $this->assertInstanceOf(Response::class, $response);
+    }
+
     public function testViewBackupDownloadZip(): void
     {
         $queryPath = '2026-03-11';
@@ -95,35 +131,16 @@ class BackupControllerTest extends TestCase
             ->willReturn($this->backupBaseDir);
 
         $request = new Request(['q' => $queryPath]);
-
-        $container = $this->createMock(ContainerInterface::class);
-        
-        $parameterBag = $this->createMock(\Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface::class);
-        $parameterBag->expects($this->once())
-            ->method('get')
-            ->with('kernel.project_dir')
-            ->willReturn($this->projectDir);
-
-        $container->expects($this->any())
-            ->method('has')
-            ->willReturnCallback(function($id) {
-                return $id === 'parameter_bag';
-            });
-
-        $container->expects($this->any())
-            ->method('get')
-            ->with('parameter_bag')
-            ->willReturn($parameterBag);
-
         $controller = new BackupController();
-        $controller->setContainer($container);
 
         $response = $controller->viewBackup($request, $backupManager);
 
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
-        
-        $zipFile = $this->projectDir . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . $queryPath . '.zip';
-        $this->assertEquals($zipFile, $response->getFile()->getPathname());
+
+        $zipFilePattern = '/^' . preg_quote(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'backup-', '/') . '[0-9a-f]{16}\.zip$/';
+        $this->assertMatchesRegularExpression($zipFilePattern, $response->getFile()->getPathname());
         $this->assertTrue($response->headers->has('content-disposition'));
+
+        @unlink($response->getFile()->getPathname());
     }
 }

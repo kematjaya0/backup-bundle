@@ -1,4 +1,4 @@
-# backup-bundle for symfony 5
+# backup-bundle for Symfony 5.4 / 6.4
 - base on https://github.com/spatie/db-dumper
 
 1. installation
@@ -12,6 +12,10 @@ composer require kematjaya/backup-bundle
 backup:
     name: postgresql
     location: '%kernel.project_dir%/var/backup'
+    # optional retention: keep at most N daily folders (null = unlimited)
+    keep: 7
+    # optional retention: delete folders older than N days (null = never delete)
+    max_age_days: 30
 ```
 3. add route 
    ```yaml

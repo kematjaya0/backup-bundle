@@ -15,6 +15,3 @@ services:
         
     Kematjaya\BackupBundle\Connection\ConnectionInterface:
         class: Kematjaya\BackupBundle\Tests\TestConnection
-        
-    Kematjaya\BackupBundle\Factory\FactoryBuilderInterface:
-        class: Kematjaya\BackupBundle\Factory\FactoryBuilder

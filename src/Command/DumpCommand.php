@@ -5,16 +5,16 @@ namespace Kematjaya\BackupBundle\Command;
 use Kematjaya\BackupBundle\Manager\BackupManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'database:dump')]
 class DumpCommand extends Command
 {
-    protected static $defaultName = 'database:dump';
-    
     private BackupManagerInterface $backupManager;
     
-    public function __construct(BackupManagerInterface $backupManager, mixed $name = null) 
+    public function __construct(BackupManagerInterface $backupManager, ?string $name = null) 
     {
         $this->backupManager = $backupManager;
         parent::__construct($name);

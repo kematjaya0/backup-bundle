@@ -29,12 +29,12 @@ class DoctrineConnection implements ConnectionInterface
 
     public function getPassword(): ?string 
     {
-        return $this->params["password"] ?? "";
+        return $this->params["password"] ?? null;
     }
 
     public function getPort(): int 
     {
-     return (int)$this->params["port"] ?? 0;   
+        return (int) ($this->params["port"] ?? 0);
     }
 
     public function getUsername(): string 
