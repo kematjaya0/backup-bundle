@@ -3,44 +3,41 @@
 namespace Kematjaya\BackupBundle\Command;
 
 use Kematjaya\BackupBundle\Manager\BackupManagerInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'database:dump')]
 class DumpCommand extends Command
 {
-    private BackupManagerInterface $backupManager;
-    
-    public function __construct(BackupManagerInterface $backupManager, ?string $name = null) 
+    public function __construct(private readonly BackupManagerInterface $backupManager, ?string $name = null)
     {
-        $this->backupManager = $backupManager;
         parent::__construct($name);
     }
-    
-    protected function execute(InputInterface $input, OutputInterface $output):int
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $io->title("backup database");
-        try{
-            
+        try {
+
             $path = $this->backupManager->run();
-            
+
             $io->success(
                 sprintf("backup date %s : '%s'", date('d/m/Y H:i:s'), $path)
             );
-            
+
         } catch (\Exception $ex) {
-            
+
             $io->error(
                 sprintf('backup date %s : %s', date('d/m/Y H:i:s'), $ex->getMessage())
             );
-            
+
             return self::FAILURE;
         }
-        
+
         return self::SUCCESS;
     }
 }

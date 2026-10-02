@@ -17,7 +17,7 @@ class DumpCommandTest extends TestCase
             ->willReturn('/path/to/backup.sql');
 
         $command = new DumpCommand($backupManager);
-        
+
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
 
@@ -26,7 +26,7 @@ class DumpCommandTest extends TestCase
         $this->assertStringContainsString('backup database', $output);
         $this->assertStringContainsString('/path/to/backup.sql', $output);
     }
-    
+
     public function testExecuteException(): void
     {
         $backupManager = $this->createMock(BackupManagerInterface::class);
@@ -35,7 +35,7 @@ class DumpCommandTest extends TestCase
             ->willThrowException(new \Exception('Test exception'));
 
         $command = new DumpCommand($backupManager);
-        
+
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
 

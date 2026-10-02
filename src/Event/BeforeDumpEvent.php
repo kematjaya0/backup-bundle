@@ -2,7 +2,4 @@
 
 namespace Kematjaya\BackupBundle\Event;
 
-class BeforeDumpEvent extends BackupEvent
-{
-    
-}
+class BeforeDumpEvent extends BackupEvent {}

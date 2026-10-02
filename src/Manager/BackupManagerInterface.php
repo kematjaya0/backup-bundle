@@ -3,11 +3,10 @@
 namespace Kematjaya\BackupBundle\Manager;
 
 /**
- *
  * @author apple
  */
-interface BackupManagerInterface 
+interface BackupManagerInterface
 {
     public function run(): string;
-    public function getBackupPath():string;
+    public function getBackupPath(): string;
 }

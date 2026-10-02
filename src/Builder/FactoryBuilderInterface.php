@@ -11,28 +11,16 @@ use Kematjaya\BackupBundle\Exception\FactoryNotFoundException;
 use Kematjaya\BackupBundle\Factory\FactoryInterface;
 
 /**
- *
  * @author apple
  */
-interface FactoryBuilderInterface 
+interface FactoryBuilderInterface
 {
     /**
      * @throws FactoryNotFoundException
-     * @param string $name
-     * @return FactoryInterface
      */
-    public function getFactory(string $name):FactoryInterface;
-    
-    /**
-     * 
-     * @param FactoryInterface $factory
-     * @return self
-     */
-    public function addFactory(FactoryInterface $factory):self;
-    
-    /**
-     * 
-     * @return array
-     */
-    public function getAllFactories():array;
+    public function getFactory(string $name): FactoryInterface;
+
+    public function addFactory(FactoryInterface $factory): self;
+
+    public function getAllFactories(): array;
 }

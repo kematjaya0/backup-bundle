@@ -7,10 +7,10 @@
 
 namespace Kematjaya\BackupBundle;
 
-use Kematjaya\BackupBundle\Factory\FactoryInterface;
 use Kematjaya\BackupBundle\CompilerPass\DatabaseFactoryCompilerPass;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Kematjaya\BackupBundle\Factory\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Description of BackupBundle
@@ -19,13 +19,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class BackupBundle extends Bundle
 {
-    public function build(ContainerBuilder $container): void 
+    public function build(ContainerBuilder $container): void
     {
         $container->registerForAutoconfiguration(FactoryInterface::class)
                 ->addTag(FactoryInterface::TAG_NAME);
-        
+
         $container->addCompilerPass(new DatabaseFactoryCompilerPass());
-        
+
         parent::build($container);
     }
 }

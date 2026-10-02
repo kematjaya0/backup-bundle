@@ -6,22 +6,18 @@ use Kematjaya\BackupBundle\Builder\FactoryBuilder;
 use Kematjaya\BackupBundle\Exception\FactoryNotFoundException;
 use Kematjaya\BackupBundle\Factory\FactoryInterface;
 use PHPUnit\Framework\TestCase;
+use Spatie\DbDumper\Databases\MySql;
 
 class FactoryBuilderTest extends TestCase
 {
     private function makeFactory(string $name): FactoryInterface
     {
-        return new class($name) implements FactoryInterface {
-            private string $factoryName;
+        return new readonly class ($name) implements FactoryInterface {
+            public function __construct(private readonly string $factoryName) {}
 
-            public function __construct(string $name)
+            public function create(): MySql
             {
-                $this->factoryName = $name;
-            }
-
-            public function create(): \Spatie\DbDumper\DbDumper
-            {
-                return \Spatie\DbDumper\Databases\MySql::create();
+                return MySql::create();
             }
 
             public function getName(): string

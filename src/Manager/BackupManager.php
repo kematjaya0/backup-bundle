@@ -2,30 +2,30 @@
 
 namespace Kematjaya\BackupBundle\Manager;
 
+use Kematjaya\BackupBundle\Builder\FactoryBuilderInterface;
+use Kematjaya\BackupBundle\Connection\ConnectionInterface;
+use Kematjaya\BackupBundle\Event\AfterDumpEvent;
 use Kematjaya\BackupBundle\Event\BackupEvents;
 use Kematjaya\BackupBundle\Event\BeforeDumpEvent;
-use Kematjaya\BackupBundle\Event\AfterDumpEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Kematjaya\BackupBundle\Connection\ConnectionInterface;
-use Kematjaya\BackupBundle\Builder\FactoryBuilderInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
-class BackupManager implements BackupManagerInterface 
+class BackupManager implements BackupManagerInterface
 {
-    private FactoryBuilderInterface $factoryBuilder;
-    
-    private array $configs;
-    private ConnectionInterface $connection;
-    
-    private EventDispatcherInterface $eventDispatcher;
-    
-    private LoggerInterface $logger;
-    
-    public function __construct(ConnectionInterface $connection, EventDispatcherInterface $eventDispatcher, FactoryBuilderInterface $factoryBuilder, ParameterBagInterface $bag, ?LoggerInterface $logger = null) 
-    {
+    private readonly array $configs;
+
+    private readonly LoggerInterface $logger;
+
+    public function __construct(
+        private readonly ConnectionInterface $connection,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly FactoryBuilderInterface $factoryBuilder,
+        ParameterBagInterface $bag,
+        ?LoggerInterface $logger = null,
+    ) {
         $configs = $bag->has('backup') ? $bag->get('backup') : null;
         if (!is_array($configs)) {
             throw new \InvalidArgumentException('Missing "backup" configuration. Add a "backup" section to your Symfony config.');
@@ -36,18 +36,16 @@ class BackupManager implements BackupManagerInterface
             }
         }
         $this->configs = $configs;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->factoryBuilder = $factoryBuilder;
-        $this->connection = $connection;
         $this->logger = $logger ?? new NullLogger();
     }
 
-    
-    public function run(): string 
+
+    public function run(): string
     {
         $start = microtime(true);
         $fileName = sprintf(
-            $this->prepareDir() . DIRECTORY_SEPARATOR . '%s.sql', date('Ymd_His')
+            $this->prepareDir() . DIRECTORY_SEPARATOR . '%s.sql',
+            date('Ymd_His')
         );
 
         $dumper = $this->factoryBuilder->getFactory($this->configs["name"])->create();
@@ -60,7 +58,7 @@ class BackupManager implements BackupManagerInterface
         $this->logger->info('Starting database dump', ['database' => $this->configs['name'], 'file' => $fileName]);
 
         $this->eventDispatcher->dispatch(
-            new BeforeDumpEvent($dumper, $fileName), 
+            new BeforeDumpEvent($dumper, $fileName),
             BackupEvents::BEFORE_DUMP
         );
 
@@ -75,7 +73,7 @@ class BackupManager implements BackupManagerInterface
         $this->logger->info('Database dump completed', [
             'file' => $evt->getFileName(),
             'duration_ms' => (int) round((microtime(true) - $start) * 1000),
-            'size_bytes' => is_file($evt->getFileName()) ? (int) filesize($evt->getFileName()) : null
+            'size_bytes' => is_file($evt->getFileName()) ? (int) filesize($evt->getFileName()) : null,
         ]);
 
         $this->eventDispatcher->dispatch(
@@ -87,12 +85,12 @@ class BackupManager implements BackupManagerInterface
 
         return $evt->getFileName();
     }
-    
-    public function getBackupPath():string
+
+    public function getBackupPath(): string
     {
         return $this->configs["location"];
     }
-    
+
     protected function prepareDir(): string
     {
         $fileSystem = new Filesystem();

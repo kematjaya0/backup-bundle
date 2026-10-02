@@ -4,27 +4,27 @@ namespace Kematjaya\BackupBundle\EventListener;
 
 use Kematjaya\BackupBundle\Event\AfterDumpEvent;
 use Kematjaya\BackupBundle\Event\BackupEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CompressListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents():array
+    public static function getSubscribedEvents(): array
     {
         return [
-            BackupEvents::AFTER_DUMP => "compress"
+            BackupEvents::AFTER_DUMP => "compress",
         ];
     }
 
-    private LoggerInterface $logger;
+    private readonly LoggerInterface $logger;
 
     public function __construct(?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?? new NullLogger();
     }
 
-    public function compress(AfterDumpEvent $evt):void
+    public function compress(AfterDumpEvent $evt): void
     {
         $sourcePath = $evt->getFileName();
         if (!file_exists($sourcePath)) {
@@ -53,9 +53,7 @@ class CompressListener implements EventSubscriberInterface
             throw new \InvalidArgumentException("File not found: $sourcePath");
         }
 
-        if ($destinationPath === null) {
-            $destinationPath = $sourcePath . '.zip';
-        }
+        $destinationPath ??= $sourcePath . '.zip';
 
         $zip = new \ZipArchive();
         if ($zip->open($destinationPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
@@ -74,9 +72,7 @@ class CompressListener implements EventSubscriberInterface
             throw new \InvalidArgumentException("File not found: $sourcePath");
         }
 
-        if ($destinationPath === null) {
-            $destinationPath = $sourcePath . '.gz';
-        }
+        $destinationPath ??= $sourcePath . '.gz';
 
         $inFile = fopen($sourcePath, 'rb');
         if (!$inFile) {

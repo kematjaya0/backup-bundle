@@ -14,26 +14,31 @@ use Kematjaya\BackupBundle\Connection\ConnectionInterface;
  *
  * @author apple
  */
-class TestConnection implements ConnectionInterface 
+class TestConnection implements ConnectionInterface
 {
     //put your code here
-    public function getDbName(): string {
+    public function getDbName(): string
+    {
         return 'test_db';
     }
 
-    public function getHost(): string {
+    public function getHost(): string
+    {
         return 'localhost';
     }
 
-    public function getPassword(): ?string {
+    public function getPassword(): ?string
+    {
         return null;
     }
 
-    public function getPort(): int {
+    public function getPort(): int
+    {
         return 3306;
     }
 
-    public function getUsername(): string {
+    public function getUsername(): string
+    {
         return 'root';
     }
 

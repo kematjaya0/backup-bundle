@@ -6,7 +6,6 @@ use Kematjaya\BackupBundle\Event\AfterDumpEvent;
 use Kematjaya\BackupBundle\EventListener\CompressListener;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Spatie\DbDumper\DbDumper;
 
 class CompressListenerTest extends TestCase
 {
@@ -19,7 +18,6 @@ class CompressListenerTest extends TestCase
         // invoke private compressGzip via reflection with high level
         $listener = new CompressListener();
         $ref = new \ReflectionMethod(CompressListener::class, 'compressGzip');
-        $ref->setAccessible(true);
         $dest = $ref->invoke($listener, $source, null, 99);
         $this->assertFileExists($dest);
         $this->assertStringEndsWith('.gz', $dest);
@@ -35,9 +33,7 @@ class CompressListenerTest extends TestCase
         $event->method('getFileName')->willReturn($source);
         $event->expects($this->once())
             ->method('setFileName')
-            ->with($this->callback(function($path) use ($source) {
-                return is_file($path) && $path !== $source;
-            }));
+            ->with($this->callback(fn($path): bool => is_file($path) && $path !== $source));
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())
             ->method('info');

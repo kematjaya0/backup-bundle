@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class BackupController extends AbstractController
 {
-    public function viewBackup(Request $request, BackupManagerInterface $backupManager):Response
+    public function viewBackup(Request $request, BackupManagerInterface $backupManager): Response
     {
         $directories = [];
         $path = $request->query->get('q');
@@ -74,12 +74,12 @@ class BackupController extends AbstractController
 
             $directories[] = [
                 "name" => $content,
-                "path" => $content
+                "path" => $content,
             ];
         }
 
         return $this->render("@Backup/view-backup.html.twig", [
-            "directories" => $directories
+            "directories" => $directories,
         ]);
     }
 }
